@@ -43,10 +43,17 @@ public class Player {
         return playerIndex;
     }
 
-    public void Discard(Card discardCard, Player player){
+    public Boolean Discard(int discardCardIndex){
 
-        if (discardCard.getValue() == player.PreferredValue()){
-            
+        Card discardCard = hand.get(discardCardIndex);
+
+        if (discardCard.getValue() == PreferredValue()){
+
+            return false;
+        }
+        else{
+            hand.remove(discardCardIndex);
+            return true;
         }
 
     }
