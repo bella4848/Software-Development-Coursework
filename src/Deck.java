@@ -1,30 +1,84 @@
-import java.util.Queue;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class Deck {
 
-    private Queue<Card> cards = new LinkedList<>();
+    private final int id;
+    private final Deque<card> cards = new ArrayDeque<>();
+    private final ReentrantLock lock = new ReentrantLock();
 
-    public Deck(){
-        cards = new LinkedList<>();
+
+    public Deck(int id) {
+        this.id = id;
     }
 
-    public void AddCard(Card card){
-        cards.add(card);
-
+    public int getId() {
+        return id;
     }
 
-    public Card RemoveCard(){
-        if (cards.size() == 0){
-            throw new NoSuchElementException("Deck is empty");
+    public ReentrantLock getLock() {
+        return lock;
+    }
+
+    public void AddCard(Card card) {
+        if (card == null) {
+            throw new IllegalArgumentException("Card must not be null");
         }
-        else{
-            Card firstCard = cards.element();
-            cards.remove(firstCard);
-            return firstCard;
+        lock.lock();
+        try {
+            cards.addLast(card);
+        } finally {
+            lock.unlock();
         }
     }
-    public int getSize(){
-        return cards.size();
-    }  
+
+    public Card RemoveCard() {
+        lock.lock();
+        try {
+            if (cards.isEmpty()) {
+                throw new NoSuchElementException("Deck is empty");
+            }
+            return cards.removeFirst();
+        } finally {
+            lock.unlock();
+        }
+    }
+    public boolean isEmpty() {
+        lock.lock();
+        try {
+            return cards.isEmpty();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public int getSize() {
+        lock.lock();
+        try {
+            return cards.size();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public List<Card> getContents() {
+        lock.lock();
+        try {
+            return new ArrayList<>(cards);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public String describe() {
+        StringBuilder sb = new StringBuilder("deck" + id + " contents:");
+        for (Card c : getContents()) {
+            sb.append(' ').append(c.getValue());
+        }
+        return sb.toString();
+    }
 }
