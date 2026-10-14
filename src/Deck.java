@@ -24,7 +24,7 @@ public class Deck {
         return lock;
     }
 
-    public void AddCard(Card card) {
+    public void addCard(Card card) {
         if (card == null) {
             throw new IllegalArgumentException("Card must not be null");
         }
@@ -36,7 +36,7 @@ public class Deck {
         }
     }
 
-    public Card RemoveCard() {
+    public Card removeCard() {
         lock.lock();
         try {
             if (cards.isEmpty()) {
