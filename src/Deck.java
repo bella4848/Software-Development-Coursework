@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Deck {
 
     private final int id;
-    private final Deque<card> cards = new ArrayDeque<>();
+    private final Deque<Card> cards = new ArrayDeque<>();
     private final ReentrantLock lock = new ReentrantLock();
 
 
